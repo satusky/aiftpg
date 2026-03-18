@@ -4,7 +4,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.database import get_session
 from app.models import GroundTruth, Submission, Team, Variable
-from app.schemas import SubmissionCreate, SubmissionDetail, SubmissionResponse
+from app.schemas import SubmissionCreate, SubmissionResponse
 from app.scoring import compute_metrics
 
 router = APIRouter(prefix="/api/submissions", tags=["submissions"])
@@ -62,7 +62,6 @@ async def create_submission(
         precision=metrics["precision"],
         recall=metrics["recall"],
         f1=metrics["f1"],
-        score=metrics["f1"],
     )
     session.add(submission)
     await session.commit()
@@ -78,7 +77,6 @@ async def create_submission(
         precision=submission.precision,
         recall=submission.recall,
         f1=submission.f1,
-        score=submission.score,
         submitted_at=submission.submitted_at,
     )
 
@@ -110,14 +108,13 @@ async def list_submissions(
             precision=sub.precision,
             recall=sub.recall,
             f1=sub.f1,
-            score=sub.score,
             submitted_at=sub.submitted_at,
         )
         for sub, tname in rows
     ]
 
 
-@router.get("/{submission_id}", response_model=SubmissionDetail)
+@router.get("/{submission_id}", response_model=SubmissionResponse)
 async def get_submission(
     submission_id: int,
     session: AsyncSession = Depends(get_session),
@@ -130,7 +127,7 @@ async def get_submission(
         raise HTTPException(status_code=404, detail="Submission not found")
 
     sub, tname = row
-    return SubmissionDetail(
+    return SubmissionResponse(
         id=sub.id,
         team_name=tname,
         variable_id=sub.variable_id,
@@ -140,6 +137,5 @@ async def get_submission(
         precision=sub.precision,
         recall=sub.recall,
         f1=sub.f1,
-        score=sub.score,
         submitted_at=sub.submitted_at,
     )
