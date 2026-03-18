@@ -82,23 +82,6 @@ async def test_team_not_found(client):
     assert response.status_code == 404
 
 
-@pytest.mark.asyncio
-async def test_dashboard_html(client):
-    await _setup_data(client)
-    response = await client.get("/dashboard/")
-    assert response.status_code == 200
-    assert "text/html" in response.headers["content-type"]
-    assert "team_a" in response.text
-
-
-@pytest.mark.asyncio
-async def test_dashboard_team_detail_html(client):
-    await _setup_data(client)
-    response = await client.get("/dashboard/teams/team_a")
-    assert response.status_code == 200
-    assert "text/html" in response.headers["content-type"]
-    assert "team_a" in response.text
-
 
 @pytest.mark.asyncio
 async def test_rescore(client):

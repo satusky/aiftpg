@@ -95,7 +95,6 @@ async def delete_ground_truth(
 @router.post("/rescore")
 async def rescore_all(session: AsyncSession = Depends(get_session)):
     """Recompute all submission scores against current ground truth."""
-    # Load all ground truth grouped by variable
     gt_result = await session.execute(select(GroundTruth))
     gt_rows = gt_result.scalars().all()
 
@@ -103,7 +102,6 @@ async def rescore_all(session: AsyncSession = Depends(get_session)):
     for gt in gt_rows:
         gt_by_variable.setdefault(gt.variable_id, {})[gt.document_id] = gt.value
 
-    # Load and rescore all submissions
     sub_result = await session.execute(select(Submission))
     submissions = sub_result.scalars().all()
 
@@ -115,7 +113,6 @@ async def rescore_all(session: AsyncSession = Depends(get_session)):
         sub.precision = metrics["precision"]
         sub.recall = metrics["recall"]
         sub.f1 = metrics["f1"]
-        sub.score = metrics["f1"]
         updated += 1
 
     await session.commit()

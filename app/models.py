@@ -67,12 +67,11 @@ class Submission(Base):
     precision = Column(Float, nullable=True)
     recall = Column(Float, nullable=True)
     f1 = Column(Float, nullable=True)
-    score = Column(Float, nullable=True)
     submitted_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
 
     team = relationship("Team", back_populates="submissions")
     variable = relationship("Variable", back_populates="submissions")
 
     __table_args__ = (
-        Index("ix_submission_team_var_score", "team_id", "variable_id", score.desc()),
+        Index("ix_submission_team_var_f1", "team_id", "variable_id", f1.desc()),
     )

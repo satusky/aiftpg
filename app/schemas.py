@@ -21,12 +21,16 @@ class SubmissionResponse(BaseModel):
     precision: float | None = None
     recall: float | None = None
     f1: float | None = None
-    score: float | None = None
     submitted_at: datetime
 
 
-class SubmissionDetail(SubmissionResponse):
-    pass
+class SubmissionBrief(BaseModel):
+    id: int
+    f1: float | None = None
+    accuracy: float | None = None
+    precision: float | None = None
+    recall: float | None = None
+    submitted_at: datetime
 
 
 class GroundTruthInfo(BaseModel):
@@ -65,4 +69,10 @@ class TeamVariableSummary(BaseModel):
     best_precision: float | None = None
     best_recall: float | None = None
     submission_count: int
-    submissions: list[SubmissionResponse]
+    submissions: list[SubmissionBrief]
+
+
+class TeamDetailResponse(BaseModel):
+    team_name: str
+    created_at: datetime
+    variables: list[TeamVariableSummary]
