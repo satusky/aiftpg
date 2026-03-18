@@ -1,18 +1,16 @@
-import { useMemo } from 'react';
-import { Title, Text, Loader, Alert, Stack } from '@mantine/core';
+import { useMemo, useState } from 'react';
+import { Title, Text, Loader, Alert, Stack, SegmentedControl } from '@mantine/core';
 import { useQuery } from '@tanstack/react-query';
-import { fetchLeaderboard, fetchOverallLeaderboard } from '../api';
-import OverallTable from '../components/OverallTable';
-import VariableTable from '../components/VariableTable';
-import type { LeaderboardEntry } from '../types';
+import { fetchLeaderboard } from '../api';
+import KanbanBoard from '../components/KanbanBoard';
+import { metricLabel } from '../constants';
+import type { LeaderboardEntry, MetricKey } from '../types';
+
+const metricOptions: MetricKey[] = ['best_f1', 'best_accuracy', 'best_precision', 'best_recall'];
 
 export default function LeaderboardPage() {
-  const overall = useQuery({
-    queryKey: ['overall'],
-    queryFn: fetchOverallLeaderboard,
-    refetchInterval: 30_000,
-    refetchIntervalInBackground: true,
-  });
+  const [sortMetric, setSortMetric] = useState<MetricKey>('best_f1');
+
   const perVar = useQuery({
     queryKey: ['leaderboard'],
     queryFn: fetchLeaderboard,
@@ -29,12 +27,12 @@ export default function LeaderboardPage() {
     return m;
   }, [perVar.data]);
 
-  if (overall.isLoading || perVar.isLoading) return <Loader m="xl" />;
-  if (overall.error || perVar.error) {
+  if (perVar.isLoading) return <Loader m="xl" />;
+  if (perVar.error) {
     return <Alert color="red" title="Error">Failed to load leaderboard data.</Alert>;
   }
 
-  const hasData = (overall.data && overall.data.length > 0) || Object.keys(grouped).length > 0;
+  const hasData = Object.keys(grouped).length > 0;
 
   return (
     <Stack gap="xl">
@@ -42,19 +40,16 @@ export default function LeaderboardPage() {
 
       {!hasData && <Text c="dimmed">No submissions yet. Submit results via the API to see the leaderboard.</Text>}
 
-      {overall.data && overall.data.length > 0 && (
+      {hasData && (
         <>
-          <Title order={2}>Overall Rankings</Title>
-          <OverallTable data={overall.data} />
+          <SegmentedControl
+            value={sortMetric}
+            onChange={(v) => setSortMetric(v as MetricKey)}
+            data={metricOptions.map((k) => ({ label: metricLabel[k], value: k }))}
+          />
+          <KanbanBoard grouped={grouped} sortMetric={sortMetric} />
         </>
       )}
-
-      {Object.entries(grouped).map(([varId, entries]) => (
-        <div key={varId}>
-          <Title order={2} mb="sm">Variable: {varId}</Title>
-          <VariableTable entries={entries} />
-        </div>
-      ))}
     </Stack>
   );
 }

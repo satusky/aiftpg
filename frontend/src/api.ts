@@ -1,4 +1,4 @@
-import type { LeaderboardEntry, OverallLeaderboardEntry, TeamDetail } from './types';
+import type { LeaderboardEntry, TeamDetail } from './types';
 
 const BASE = '/api';
 
@@ -10,9 +10,6 @@ async function fetchJson<T>(url: string): Promise<T> {
 
 export const fetchLeaderboard = () =>
   fetchJson<LeaderboardEntry[]>(`${BASE}/leaderboard`);
-
-export const fetchOverallLeaderboard = () =>
-  fetchJson<OverallLeaderboardEntry[]>(`${BASE}/leaderboard/overall`);
 
 export const fetchTeamDetail = (teamName: string) =>
   fetchJson<TeamDetail>(`${BASE}/teams/${encodeURIComponent(teamName)}`);

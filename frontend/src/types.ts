@@ -9,12 +9,7 @@ export interface LeaderboardEntry {
   submission_count: number;
 }
 
-export interface OverallLeaderboardEntry {
-  rank: number;
-  team_name: string;
-  avg_best_f1: number | null;
-  variables_attempted: number;
-}
+export type MetricKey = 'best_f1' | 'best_accuracy' | 'best_precision' | 'best_recall';
 
 export interface SubmissionRecord {
   id: number;
