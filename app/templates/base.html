@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Hackathon Dashboard{% endblock %}</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
+    <style>
+        .metric { font-weight: bold; }
+        .rank-1 { color: #d4a017; }
+        .rank-2 { color: #888; }
+        .rank-3 { color: #a0522d; }
+        table { margin-bottom: 1rem; }
+        .chart-container { max-width: 700px; margin: 1rem auto; }
+        nav { margin-bottom: 1rem; }
+    </style>
+</head>
+<body>
+    <main class="container">
+        <nav>
+            <ul>
+                <li><strong>Hackathon Dashboard</strong></li>
+            </ul>
+            <ul>
+                <li><a href="/dashboard/">Leaderboard</a></li>
+                <li><a href="/docs">API Docs</a></li>
+            </ul>
+        </nav>
+        {% block content %}{% endblock %}
+    </main>
+    {% block scripts %}{% endblock %}
+    <script>
+        // Auto-refresh every 30 seconds
+        setTimeout(() => location.reload(), 30000);
+    </script>
+</body>
+</html>
