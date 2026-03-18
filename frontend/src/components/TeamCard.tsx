@@ -1,7 +1,7 @@
-import { Card, Badge, Anchor, Text, Group, SimpleGrid } from '@mantine/core';
+import { Card, Badge, Anchor, Text, Group, Stack } from '@mantine/core';
 import { Link } from 'react-router-dom';
 import type { LeaderboardEntry, MetricKey } from '../types';
-import { medalColor, metricLabel } from '../constants';
+import { medalColor, metricColor, metricLabel } from '../constants';
 
 interface Props {
   entry: LeaderboardEntry;
@@ -34,19 +34,25 @@ export default function TeamCard({ entry, sortMetric }: Props) {
         </Text>
       </Group>
 
-      <SimpleGrid cols={2} spacing="xs">
-        {allMetrics.map((m) => {
-          const isActive = m === sortMetric;
-          return (
-            <div key={m}>
-              <Text size="xs" c="dimmed">{metricLabel[m]}</Text>
-              <Text ff="monospace" fw={isActive ? 700 : 400} size={isActive ? 'lg' : 'sm'}>
-                {fmt(entry[m])}
-              </Text>
-            </div>
-          );
-        })}
-      </SimpleGrid>
+      <Group align="flex-start" mt="xs" gap="md">
+        <div>
+          <Badge variant="light" color={metricColor[sortMetric]} size="md">
+            {metricLabel[sortMetric]}
+          </Badge>
+          <Text ff="monospace" fw={700} size="xl">
+            {fmt(entry[sortMetric])}
+          </Text>
+        </div>
+
+        <Stack gap={4}>
+          {allMetrics.filter(m => m !== sortMetric).map(m => (
+            <Group key={m} gap={6}>
+              <Badge variant="light" color={metricColor[m]} size="xs">{metricLabel[m]}</Badge>
+              <Text ff="monospace" size="xs">{fmt(entry[m])}</Text>
+            </Group>
+          ))}
+        </Stack>
+      </Group>
     </Card>
   );
 }

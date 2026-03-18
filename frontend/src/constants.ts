@@ -6,3 +6,10 @@ export const metricLabel: Record<string, string> = {
   best_precision: 'Precision',
   best_recall: 'Recall',
 };
+
+export const metricColor: Record<string, string> = {
+  best_f1: 'blue',
+  best_accuracy: 'teal',
+  best_precision: 'violet',
+  best_recall: 'orange',
+};
